@@ -1,2 +1,2 @@
 # MLND-P3-LINEAR-ALGEBRA
-纳米学位
+Udacity机器学习入门 线性回归项目
