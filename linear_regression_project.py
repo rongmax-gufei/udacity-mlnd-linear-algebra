@@ -481,7 +481,7 @@ plt.show()
 # 
 # ### 3.2.1 猜测一条直线
 
-# In[27]:
+# In[45]:
 
 
 #TODO 请选择最适合的直线 y = mx + b
@@ -508,7 +508,7 @@ plt.show()
 # MSE = \frac{1}{n}\sum_{i=1}^{n}{(y_i - mx_i - b)^2}
 # $$
 
-# In[29]:
+# In[50]:
 
 
 # TODO 实现以下函数并输出所选直线的MSE
@@ -520,8 +520,7 @@ def calculateMSE(X,Y,m,b):
         return sum(square_li) / float(n)
     else:
         raise ValueError
-
-print(calculateMSE(X,Y,m1,b1))
+print(calculateMSE(X,Y,m,b))
 
 
 # ### 3.2.3 调整参数 $m, b$ 来获得最小的平方平均误差
@@ -632,7 +631,7 @@ print(calculateMSE(X,Y,m1,b1))
 # 
 # 在3.3 中，我们知道线性回归问题等价于求解 $X^TXh = X^TY$ (如果你选择不做3.3，就勇敢的相信吧，哈哈)
 
-# In[30]:
+# In[42]:
 
 
 # TODO 实现线性回归
@@ -656,7 +655,7 @@ print(m,b)
 # 你求得的回归结果是什么？
 # 请使用运行以下代码将它画出来。
 
-# In[31]:
+# In[43]:
 
 
 # 请不要修改下面的代码
@@ -674,7 +673,7 @@ plt.show()
 
 # 你求得的回归结果对当前数据集的MSE是多少？
 
-# In[32]:
+# In[44]:
 
 
 print(calculateMSE(X,Y,m,b))
