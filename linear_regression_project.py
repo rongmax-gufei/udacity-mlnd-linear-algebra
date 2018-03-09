@@ -381,7 +381,7 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 
 # ### 2.3.3 实现 Gaussian Jordan 消元法
 
-# In[207]:
+# In[225]:
 
 
 # TODO 实现 Gaussain Jordan 方法求解 Ax = b
@@ -400,17 +400,18 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 
 def gj_Solve(A, b, decPts = 4, epsilon = 1.0e-16):
     
-    # check A, b, 高度不同 return None
+    # 检查A，b是否行数相同 return None
     if len(A) != len(b):
         raise None
         
-    # 调用增广矩阵函数，input value: A, b, return Ab
+    # 构造增广矩阵Ab
     Ab = augmentMatrix(A, b)
     
     # 返回矩阵的行数和列数: row && column
     row, column = shape(Ab)
     
-    # 循环遍历矩阵的列
+    # 逐列转换Ab为化简行阶梯形矩阵，对于Ab的每一列（最后一列除外）
+    # 当前列为列c
     for c in range (column - 1):
         
         r = c
@@ -426,20 +427,22 @@ def gj_Solve(A, b, decPts = 4, epsilon = 1.0e-16):
         max_list_value = max(max_list)
         # 取max_value的索引值
         max_list_value_index = max_list.index(max_list_value)
+        # 寻找列c中 对角线以及对角线以下所有元素（行 c~N）的绝对值的最大值
         max_row = r_index_list[max_list_value_index]
         
-        #check max_value的有效性
+        # 如果绝对值最大值为0，那么A为奇异矩阵，返回None
         if max_list_value < epsilon:
             return None
         elif max_row != c:
-            # 修改参数矩阵 r1 <---> r2
+            # 使用第一个行变换，将绝对值最大值所在行交换到对角线元素所在行（行c） 
             swapRows(Ab, c, max_row)
 
-        # 计算放大倍数
+        # 计算缩放值
         scale = 1.0 / Ab[c][c]
-        # 修改参数矩阵 r1 <--- r1 * scale
+        # 使用第二个行变换，将列c的对角线元素缩放为1
         scaleRow(Ab, c, scale)
 
+        #多次使用第三个行变换，将列c的其他元素消为0
         i = 0
         while(i < row):
             if i == c:
@@ -450,16 +453,18 @@ def gj_Solve(A, b, decPts = 4, epsilon = 1.0e-16):
             addScaledRow(Ab, i, c, _Ab_scale)
             i += 1
             
-#     printInMatrixFormat(Ab)
+    # 打印矩阵Ab
+    printInMatrixFormat(Ab)
     
+    # 返回Ab的最后一列
     return_list = []
     for r in range(row):
         return_list.append([round(Ab[r][-1], decPts)])
-#     print ("return_list: " + format(return_list))
+    print ("last_row_list: " + format(return_list))
     return return_list
 
 
-# In[208]:
+# In[226]:
 
 
 # 运行以下代码测试你的 gj_Solve 函数
