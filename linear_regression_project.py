@@ -1,11 +1,11 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[187]:
 
 
 # 任意选一个你喜欢的整数，这能帮你得到稳定的结果
-seed = 9999
+seed = 888
 
 
 # # 欢迎来到线性回归项目
@@ -20,7 +20,7 @@ seed = 9999
 # 
 # ## 1.1 创建一个 4*4 的单位矩阵
 
-# In[3]:
+# In[188]:
 
 
 # 这个项目设计来帮你熟悉 python list 和线性代数
@@ -50,7 +50,7 @@ I = [[1,0,0,0],
 
 # ## 1.2 返回矩阵的行数和列数
 
-# In[4]:
+# In[189]:
 
 
 # TODO 返回矩阵的行数和列数
@@ -58,7 +58,7 @@ def shape(M):
     return (len(M),len(M[0]))
 
 
-# In[5]:
+# In[190]:
 
 
 # 运行以下代码测试你的 shape 函数
@@ -67,7 +67,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_shape')
 
 # ## 1.3 每个元素四舍五入到特定小数数位
 
-# In[6]:
+# In[191]:
 
 
 # TODO 每个元素四舍五入到特定小数数位
@@ -75,11 +75,11 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_shape')
 def matxRound(M, decPts=4):
     for x in range(len(M)):
         for y in range(len(M[x])):
-            M[x][y] = round(M[x][y],decPts)
+            M[x][y] = round(M[x][y], decPts)
     pass
 
 
-# In[7]:
+# In[192]:
 
 
 # 运行以下代码测试你的 matxRound 函数
@@ -88,7 +88,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_matxRound')
 
 # ## 1.4 计算矩阵的转置
 
-# In[8]:
+# In[193]:
 
 
 # TODO 计算矩阵的转置
@@ -96,7 +96,7 @@ def transpose(M):
     return [list(col) for col in zip(*M)]
 
 
-# In[9]:
+# In[194]:
 
 
 # 运行以下代码测试你的 transpose 函数
@@ -105,22 +105,25 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_transpose')
 
 # ## 1.5 计算矩阵乘法 AB
 
-# In[10]:
+# In[195]:
 
 
 # TODO 计算矩阵乘法 AB，如果无法相乘则raise ValueError
 def matxMultiply(A, B):
-    _, c = shape(A)
-    r, _ = shape(B)
-    if c != r :
-        raise ValueError
+    
+    if len(A[0]) != len(B):
+        raise ValueError('sorry, value error')
+    
+    result = [[0]*len(B[0]) for x in range(len(A))]
+    for x in range(len(A)):
+        for m in range(len(B[0])):
+            for k in range(len(B)):
+                result[x][m] += A[x][k]*B[k][m]
+                     
+    return result 
 
-    Bt = transpose(B)
-    result = [[sum((a*b) for a,b in zip(row,col)) for col in Bt] for row in A]
-    return result
 
-
-# In[11]:
+# In[196]:
 
 
 # 运行以下代码测试你的 matxMultiply 函数
@@ -154,7 +157,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_matxMultipl
 #     ...    & ... & ... & ...& ...\\
 #     a_{n1}    & a_{n2} & ... & a_{nn} & b_{n} \end{bmatrix}$
 
-# In[12]:
+# In[197]:
 
 
 # TODO 构造增广矩阵，假设A，b行数相同
@@ -162,7 +165,7 @@ def augmentMatrix(A, b):
     return [ra + rb for ra,rb in zip(A,b)]
 
 
-# In[13]:
+# In[198]:
 
 
 # 运行以下代码测试你的 augmentMatrix 函数
@@ -174,60 +177,59 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_augmentMatr
 # - 把某行乘以一个非零常数
 # - 把某行加上另一行的若干倍：
 
-# In[15]:
+# In[199]:
 
 
 # TODO r1 <---> r2
 # 直接修改参数矩阵，无返回值
 def swapRows(M, r1, r2):
-    if(0 <= r1 < len(M)) and (0 <= r2 < len(M)):
-        M[r1], M[r2] = M[r2], M[r1]
-    else:
-        raise IndexError('list index out of range')
+    tempV = M[r1]
+    M[r1] = M[r2]
+    M[r2] = tempV
+    pass
 
 
-# In[16]:
+# In[200]:
 
 
 # 运行以下代码测试你的 swapRows 函数
 get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_swapRows')
 
 
-# In[17]:
+# In[201]:
 
 
 # TODO r1 <--- r1 * scale
 # scale为0是非法输入，要求 raise ValueError
 # 直接修改参数矩阵，无返回值
 def scaleRow(M, r, scale):
-    if not scale:
-        raise ValueError('the parameter scale can not be zero')
+    if (scale != 0):
+        M[r] = [scale * i for i in M[r]]
     else:
-        M[r] = [scale*i for i in M[r]]
+        raise ValueError
+    pass
 
 
-# In[18]:
+# In[202]:
 
 
 # 运行以下代码测试你的 scaleRow 函数
 get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_scaleRow')
 
 
-# In[19]:
+# In[203]:
 
 
 # TODO r1 <--- r1 + r2*scale
 # 直接修改参数矩阵，无返回值
 def addScaledRow(M, r1, r2, scale):
-    if not scale:
-        raise ValueError
-    if (0 <= r1 < len(M)) and (0 <= r2 < len(M)):
-        M[r1] = [M[r1][i] + scale * M[r2][i] for i in range(len(M[r2]))]
-    else:
-        raise IndexError('list index out of range')
+    if (scale != 0):
+        if (0 <= r1) and (0 <= r2):
+            M[r1] = [a + b * scale for a,b in zip(M[r1],M[r2])]    
+    pass
 
 
-# In[20]:
+# In[204]:
 
 
 # 运行以下代码测试你的 addScaledRow 函数
@@ -300,7 +302,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_addScaledRo
 
 # #### 以下开始你的尝试吧!
 
-# In[21]:
+# In[205]:
 
 
 # 不要修改这里！
@@ -339,7 +341,7 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 #     
 # $...$
 
-# In[22]:
+# In[206]:
 
 
 # 不要修改这里！
@@ -379,7 +381,7 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 
 # ### 2.3.3 实现 Gaussian Jordan 消元法
 
-# In[23]:
+# In[207]:
 
 
 # TODO 实现 Gaussain Jordan 方法求解 Ax = b
@@ -396,34 +398,68 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
     返回None，如果 A 为奇异矩阵
 """
 
-def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
+def gj_Solve(A, b, decPts = 4, epsilon = 1.0e-16):
+    
+    # check A, b, 高度不同 return None
     if len(A) != len(b):
-        raise ValueError
-
-    Ab = augmentMatrix(A,b)
-
-    for c in range(len(A[0])):
-        AbT = transpose(Ab)
-        col = AbT[c]
-        maxValue = max(col[c:],key=abs)
-        if abs(maxValue) < epsilon:
+        raise None
+        
+    # 调用增广矩阵函数，input value: A, b, return Ab
+    Ab = augmentMatrix(A, b)
+    
+    # 返回矩阵的行数和列数: row && column
+    row, column = shape(Ab)
+    
+    # 循环遍历矩阵的列
+    for c in range (column - 1):
+        
+        r = c
+        max_list = []
+        r_index_list = []
+        
+        while(r < row):
+            max_list.append(abs(Ab[r][c]))
+            r_index_list.append(r)
+            r += 1
+        
+        # 取最大值
+        max_list_value = max(max_list)
+        # 取max_value的索引值
+        max_list_value_index = max_list.index(max_list_value)
+        max_row = r_index_list[max_list_value_index]
+        
+        #check max_value的有效性
+        if max_list_value < epsilon:
             return None
+        elif max_row != c:
+            # 修改参数矩阵 r1 <---> r2
+            swapRows(Ab, c, max_row)
 
-        maxIndex = col[c:].index(maxValue)+c
+        # 计算放大倍数
+        scale = 1.0 / Ab[c][c]
+        # 修改参数矩阵 r1 <--- r1 * scale
+        scaleRow(Ab, c, scale)
 
-        swapRows(Ab,c,maxIndex)
-        scaleRow(Ab,c,1.0/Ab[c][c])
+        i = 0
+        while(i < row):
+            if i == c:
+                i += 1
+                continue
+            _Ab_scale = -Ab[i][c]
+            # 修改参数矩阵
+            addScaledRow(Ab, i, c, _Ab_scale)
+            i += 1
+            
+#     printInMatrixFormat(Ab)
+    
+    return_list = []
+    for r in range(row):
+        return_list.append([round(Ab[r][-1], decPts)])
+#     print ("return_list: " + format(return_list))
+    return return_list
 
-        for i in range(len(A)):
-            if Ab[i][c] != 0 and i != c:
-                addScaledRow(Ab,i,c,-Ab[i][c])
 
-    matxRound(Ab)
-
-    return [[value] for value in transpose(Ab)[-1]]
-
-
-# In[24]:
+# In[208]:
 
 
 # 运行以下代码测试你的 gj_Solve 函数
@@ -458,7 +494,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_gj_Solve')
 
 # ## 3.1 随机生成样本点
 
-# In[25]:
+# In[209]:
 
 
 # 不要修改这里！
@@ -481,7 +517,7 @@ plt.show()
 # 
 # ### 3.2.1 猜测一条直线
 
-# In[45]:
+# In[210]:
 
 
 #TODO 请选择最适合的直线 y = mx + b
@@ -508,7 +544,7 @@ plt.show()
 # MSE = \frac{1}{n}\sum_{i=1}^{n}{(y_i - mx_i - b)^2}
 # $$
 
-# In[50]:
+# In[211]:
 
 
 # TODO 实现以下函数并输出所选直线的MSE
@@ -516,11 +552,13 @@ plt.show()
 def calculateMSE(X,Y,m,b):
     if len(X) == len(Y) and len(X) != 0:
         n = len(X)
-        square_li = [(Y[i]-m*X[i]-b)**2 for i in range(n)]
-        return sum(square_li) / float(n)
+        sum_list = [(Y[i] - m * X[i] - b) ** 2 for i in range(n)]
+        fn = float(n)
+        return sum(sum_list) / fn
     else:
         raise ValueError
-print(calculateMSE(X,Y,m,b))
+
+print(calculateMSE(X, Y, m1, b1))
 
 
 # ### 3.2.3 调整参数 $m, b$ 来获得最小的平方平均误差
@@ -631,7 +669,7 @@ print(calculateMSE(X,Y,m,b))
 # 
 # 在3.3 中，我们知道线性回归问题等价于求解 $X^TXh = X^TY$ (如果你选择不做3.3，就勇敢的相信吧，哈哈)
 
-# In[42]:
+# In[212]:
 
 
 # TODO 实现线性回归
@@ -645,36 +683,38 @@ def linearRegression(X,Y):
     XT = transpose(X)
     A = matxMultiply(XT, X)
     b = matxMultiply(XT, Y)
-    ret = gj_Solve(A, b)
-    return ret[0][0], ret[1][0]
+    result_list = gj_Solve(A, b)
+    return result_list[0][0], result_list[1][0]
 
-m,b = linearRegression(X,Y)
-print(m,b)
+m2, b2 = linearRegression(X, Y)
+assert isinstance(m2, float),"m is not a float"
+assert isinstance(b2, float),"b is not a float"
+print(m2, b2)
 
 
 # 你求得的回归结果是什么？
 # 请使用运行以下代码将它画出来。
 
-# In[43]:
+# In[213]:
 
 
 # 请不要修改下面的代码
 x1,x2 = -5,5
-y1,y2 = x1*m+b, x2*m+b
+y1,y2 = x1*m2+b2, x2*m2+b2
 
 plt.xlim((-5,5))
 plt.xlabel('x',fontsize=18)
 plt.ylabel('y',fontsize=18)
 plt.scatter(X,Y,c='b')
 plt.plot((x1,x2),(y1,y2),'r')
-plt.text(1,2,'y = {m}x + {b}'.format(m=m,b=b))
+plt.title('y = {m:.4f}x + {b:.4f}'.format(m=m2,b=b2))
 plt.show()
 
 
 # 你求得的回归结果对当前数据集的MSE是多少？
 
-# In[44]:
+# In[214]:
 
 
-print(calculateMSE(X,Y,m,b))
+print(calculateMSE(X,Y,m2,b2))
 
