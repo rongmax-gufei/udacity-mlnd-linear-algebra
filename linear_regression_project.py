@@ -357,59 +357,55 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 #     -3 & 4 & 3 & 1 \\
 #     7 & 6 & 2 & 1 \end{bmatrix}$
 # 
-# ① <- ① * $\frac{1}{3}$
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     7 & 6 & 2 & 1 \\
 #     -3 & 4 & 3 & 1 \\
-#     7 & 6 & 2 & 1 \end{bmatrix}$
+#     3 & 5 & 9 & 1 \end{bmatrix}$
 # 
-# ② <- ① * 3 + ②
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
-#     0 & 9 & 12 & 2 \\
-#     7 & 6 & 2 & 1 \end{bmatrix}$
+#     1 & \frac{6}{7} & \frac{2}{7} & \frac{1}{7} \\
+#     -3 & 4 & 3 & 1 \\
+#     3 & 5 & 9 & 1 \end{bmatrix}$
 # 
-# ③ <- ① * -7 + ③
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
-#     0 & 9 & 12 & 2 \\
-#     0 & \frac{-17}{3} & -19 & \frac{-4}{3} \end{bmatrix}$
+#     1 & \frac{6}{7} & \frac{2}{7} & \frac{1}{7} \\
+#     0 & \frac{46}{7} & \frac{27}{7} & \frac{10}{7} \\
+#     3 & 5 & 9 & 1 \end{bmatrix}$
 # 
-# ② <- ② * $\frac{-1}{9}$
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
-#     0 & 1 & \frac{4}{3} & \frac{2}{9} \\
-#     0 & \frac{-17}{3} & -19 & \frac{-4}{3} \end{bmatrix}$
+#     1 & \frac{6}{7} & \frac{2}{7} & \frac{1}{7} \\
+#     0 & \frac{46}{7} & \frac{27}{7} & \frac{10}{7} \\
+#     0 & \frac{17}{7} & \frac{57}{7} & \frac{4}{7} \end{bmatrix}$
 # 
-# ③ <- ② * $\frac{-17}{3}$ + ③
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
-#     0 & 1 & \frac{4}{3} & \frac{2}{9} \\
-#     0 & 0 & \frac{-9}{103} & \frac{-2}{27} \end{bmatrix}$  
+#     1 & \frac{6}{7} & \frac{2}{7} & \frac{1}{7} \\
+#     0 & 1 & \frac{27}{46} & \frac{5}{23} \\
+#     0 & \frac{17}{7} & \frac{57}{7} & \frac{4}{7} \end{bmatrix}$
 # 
-# ③ <- ③ * $\frac{-9}{103}$ + ③
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
-#     0 & 1 & \frac{4}{3} & \frac{2}{9} \\
+#     1 & 0 & \frac{-5}{23} & \frac{-1}{23} \\
+#     0 & 1 & \frac{27}{46} & \frac{5}{23} \\
+#     0 & \frac{17}{7} & \frac{57}{7} & \frac{4}{7} \end{bmatrix}$
+# 
+# $ --> \begin{bmatrix}
+#     1 & 0 & \frac{-5}{23} & \frac{-1}{23} \\
+#     0 & 1 & \frac{27}{46} & \frac{5}{23} \\
+#     0 & 0 & \frac{309}{46} & \frac{1}{23} \end{bmatrix}$
+# 
+# $ --> \begin{bmatrix}
+#     1 & 0 & \frac{-5}{23} & \frac{-1}{23} \\
+#     0 & 1 & \frac{27}{46} & \frac{5}{23} \\
 #     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$
 # 
-# ② <- ③ * $\frac{-4}{3}$ + ② 
 # $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
-#     0 & 1 & 0 & \frac{22}{103} \\
+#     1 & 0 & 0 & \frac{-13}{309} \\
+#     0 & 1 & \frac{27}{46} & \frac{5}{23} \\
 #     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$
-# 
-# ① <- ③ * -3 + ① 
-# $ --> \begin{bmatrix}
-#     1 & \frac{5}{3} & 0 & \frac{97}{309} \\
-#     0 & 1 & 0 & \frac{22}{103} \\
-#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$  
-# 
-# ① <- ② * $\frac{-5}{3}$ + ① 
+#     
 # $ --> \begin{bmatrix}
 #     1 & 0 & 0 & \frac{-13}{309} \\
 #     0 & 1 & 0 & \frac{22}{103} \\
-#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$  
+#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$
 # 
 # 方程有唯一解，为可逆矩阵：<br><br>
 # x = $\frac{-13}{309}$ <br><br>
@@ -444,65 +440,47 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 #     -6 & 6 & 6 & 1 \\
 #     -5 & -5 & 1 & 1 \end{bmatrix}$
 # 
-# ① <- ① * $\frac{-1}{2}$
 # $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
 #     -6 & 6 & 6 & 1 \\
+#     -2 & -8 & -2 & 1 \\
 #     -5 & -5 & 1 & 1 \end{bmatrix}$
 # 
-# ② <- ① * 6 + ②
 # $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
-#     0 & 30 & 12 & -2 \\
+#     1 & -1 & -1 & \frac{-1}{6} \\
+#     -2 & -8 & -2 & 1 \\
 #     -5 & -5 & 1 & 1 \end{bmatrix}$
 # 
-# ③ <- ① * 5 + ③
 # $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
-#     0 & 30 & 12 & -2 \\
-#     0 & 15 & 6 & \frac{-3}{2} \end{bmatrix}$
+#     1 & -1 & -1 & \frac{-1}{6} \\
+#     0 & -10 & -4 & \frac{2}{3} \\
+#     -5 & -5 & 1 & 1 \end{bmatrix}$
 # 
-# ② <- ② * $\frac{1}{30}$
 # $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
+#     1 & -1 & -1 & \frac{-1}{6} \\
+#     0 & -10 & -4 & \frac{2}{3} \\
+#     0 & -10 & -4 & \frac{1}{6} \end{bmatrix}$
+# 
+# $ --> \begin{bmatrix}
+#     1 & -1 & -1 & \frac{-1}{6} \\
 #     0 & 1 & \frac{2}{5} & \frac{-1}{15} \\
-#     0 & 15 & 6 & \frac{-3}{2} \end{bmatrix}$
+#     0 & -10 & -4 & \frac{1}{6} \end{bmatrix}$
 # 
-# ③ <- ② * (-15) + ③
 # $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
+#     1 & 0 & \frac{-3}{5} & \frac{-7}{30} \\
 #     0 & 1 & \frac{2}{5} & \frac{-1}{15} \\
-#     0 & 0 & 0 & \frac{-1}{2} \end{bmatrix}$ 
+#     0 & -10 & -4 & \frac{1}{6} \end{bmatrix}$
 # 
-# ③ <- ③ * (-2)
 # $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
+#     1 & 0 & \frac{-3}{5} & \frac{-7}{30} \\
 #     0 & 1 & \frac{2}{5} & \frac{-1}{15} \\
-#     0 & 0 & 0 & 1 \end{bmatrix}$
-# 
-# ② <- ③ * $\frac{1}{15}$ + ②
-# $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
-#     0 & 1 & \frac{2}{5} & 0 \\
-#     0 & 0 & 0 & 1 \end{bmatrix}$
-# 
-# ① <- ③ * $\frac{1}{2}$ + ① 
-# $ --> \begin{bmatrix}
-#     1 & 4 & 1 & \frac{-1}{2} \\
-#     0 & 1 & \frac{2}{5} & 0 \\
-#     0 & 0 & 0 & 1 \end{bmatrix}$ 
-# 
-# ① <- ② * (-4) + ① 
-# $ --> \begin{bmatrix}
-#     1 & 0 & \frac{-3}{5} & 0 \\
-#     0 & 1 & \frac{2}{5} & 0 \\
-#     0 & 0 & 0 & 1 \end{bmatrix}$
+#     0 & 0 & 0 & \frac{-1}{2} \end{bmatrix}$
 # 
 # 转为方程如下：<br><br>
-# x + $\frac{-3}{5}$ * z = 0 <br><br>
-# y + $\frac{2}{5}$ * z = 0<br><br>
-# 0 = 1<br><br>
-# 0 = 1无解，该矩阵为奇异矩阵
+# x + $\frac{-3}{5}$ * z = $\frac{-7}{30}$ <br><br>
+# y + $\frac{2}{5}$ * z = $\frac{-1}{15}$<br><br>
+# 0 = $\frac{-1}{2}$<br><br>
+# 
+# 0 = $\frac{-1}{2}$无解，该矩阵为奇异矩阵
 # 
 
 # ### 2.3.3 实现 Gaussian Jordan 消元法
@@ -522,6 +500,13 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
     返回列向量 x 使得 Ax = b 
     返回None，如果 A，b 高度不同
     返回None，如果 A 为奇异矩阵
+# 参考资料：
+# [Udacity P3直播课] https://m.qlchat.com/topic/details?topicId=2000000919066007
+# [Python内置函数Api] http://www.runoob.com/python/python-built-in-functions.html
+# [矩阵的行列获取方法] http://blog.csdn.net/luoganttcc/article/details/74080768
+# [获取列表中绝对值最大值] http://zhoufeng1989.github.io/Key-parameter-in-max-min-sorted/
+# [Python矩阵转置] https://baijiahao.baidu.com/s?id=1579306472315552043&wfr=spider&for=pc
+# [链表推导式] https://zhidao.baidu.com/question/89558106.html
 """
 def gj_Solve(A, b, decPts = 4, epsilon = 1.0e-16):
     # 检查A，b是否行数相同 return None
