@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[187]:
+# In[199]:
 
 
 # 任意选一个你喜欢的整数，这能帮你得到稳定的结果
@@ -20,7 +20,7 @@ seed = 888
 # 
 # ## 1.1 创建一个 4*4 的单位矩阵
 
-# In[188]:
+# In[200]:
 
 
 # 这个项目设计来帮你熟悉 python list 和线性代数
@@ -50,15 +50,15 @@ I = [[1,0,0,0],
 
 # ## 1.2 返回矩阵的行数和列数
 
-# In[189]:
+# In[201]:
 
 
 # TODO 返回矩阵的行数和列数
 def shape(M):
-    return (len(M),len(M[0]))
+    return (len(M), len(M[0]))
 
 
-# In[190]:
+# In[202]:
 
 
 # 运行以下代码测试你的 shape 函数
@@ -67,19 +67,24 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_shape')
 
 # ## 1.3 每个元素四舍五入到特定小数数位
 
-# In[191]:
+# In[203]:
 
 
 # TODO 每个元素四舍五入到特定小数数位
 # 直接修改参数矩阵，无返回值
 def matxRound(M, decPts=4):
-    for x in range(len(M)):
-        for y in range(len(M[x])):
-            M[x][y] = round(M[x][y], decPts)
+    # 使用shape函数，取出行列数量
+    row_count, col_count = shape(M)
+    # 遍历每一行
+    for row in range(row_count):
+        # 遍历每一列
+        for col in range(col_count):
+            # 使用round函数计算后再重新赋值
+            M[row][col] = round(M[row][col], decPts)
     pass
 
 
-# In[192]:
+# In[204]:
 
 
 # 运行以下代码测试你的 matxRound 函数
@@ -88,15 +93,18 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_matxRound')
 
 # ## 1.4 计算矩阵的转置
 
-# In[193]:
+# In[205]:
 
 
 # TODO 计算矩阵的转置
 def transpose(M):
-    return [list(col) for col in zip(*M)]
+    # 利用 * 号操作符，可以将元组解压为列表
+    # zip() 函数用于将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表
+    # list() 方法用于将元组转换为列表。
+    return list(map(list, zip(*M)))
 
 
-# In[194]:
+# In[206]:
 
 
 # 运行以下代码测试你的 transpose 函数
@@ -105,25 +113,40 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_transpose')
 
 # ## 1.5 计算矩阵乘法 AB
 
-# In[195]:
+# In[207]:
 
 
 # TODO 计算矩阵乘法 AB，如果无法相乘则raise ValueError
 def matxMultiply(A, B):
     
-    if len(A[0]) != len(B):
-        raise ValueError('sorry, value error')
+    # 使用shape函数，取出A B矩阵的行列数量
+    matx_a_row_num, matx_a_clo_num = shape(A)
+    matx_b_row_num, matx_b_clo_num = shape(B)
     
-    result = [[0]*len(B[0]) for x in range(len(A))]
-    for x in range(len(A)):
-        for m in range(len(B[0])):
-            for k in range(len(B)):
-                result[x][m] += A[x][k]*B[k][m]
-                     
+    # 先判断矩阵的相乘条件，不满足就抛出异常结束计算
+    if matx_a_clo_num != matx_b_row_num:
+        raise ValueError
+    
+    # 初始化一个new_matx_row_num * new_matx_col_num每项为0的数组
+    new_matx_col_num = matx_b_clo_num
+    new_matx_row_num = matx_a_row_num
+    result = [[0] * new_matx_col_num for i in range(new_matx_row_num)]
+    
+    # 逐行遍历矩阵a
+    for a_row in range(matx_a_row_num):
+#         print ("a_row:%d" %(a_row))
+        # 逐列遍历矩阵b
+        for b_col in range(matx_b_clo_num):
+#             print ("b_col:%d" %(b_col))
+            # 取出矩阵b每行上的元素
+            for b_row in range(matx_b_row_num):
+#                 print ("b_row:%d" %(b_row))
+                result[a_row][b_col] += A[a_row][b_row] * B[b_row][b_col]
+#     print(result)                 
     return result 
 
 
-# In[196]:
+# In[208]:
 
 
 # 运行以下代码测试你的 matxMultiply 函数
@@ -157,15 +180,19 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_matxMultipl
 #     ...    & ... & ... & ...& ...\\
 #     a_{n1}    & a_{n2} & ... & a_{nn} & b_{n} \end{bmatrix}$
 
-# In[197]:
+# In[209]:
 
 
 # TODO 构造增广矩阵，假设A，b行数相同
 def augmentMatrix(A, b):
-    return [ra + rb for ra,rb in zip(A,b)]
+    # 初始化一个len(b) * len(b[0] 每项为0的数组
+    result = [[0] * shape(b)[1] for i in range(shape(b)[0])]
+    for i in range(len(A)):
+        result[i] = A[i] + b[i]        
+    return result
 
 
-# In[198]:
+# In[210]:
 
 
 # 运行以下代码测试你的 augmentMatrix 函数
@@ -177,59 +204,59 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_augmentMatr
 # - 把某行乘以一个非零常数
 # - 把某行加上另一行的若干倍：
 
-# In[199]:
+# In[211]:
 
 
 # TODO r1 <---> r2
 # 直接修改参数矩阵，无返回值
 def swapRows(M, r1, r2):
-    tempV = M[r1]
-    M[r1] = M[r2]
-    M[r2] = tempV
+    M[r1], M[r2] = M[r2], M[r1]
     pass
 
 
-# In[200]:
+# In[212]:
 
 
 # 运行以下代码测试你的 swapRows 函数
 get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_swapRows')
 
 
-# In[201]:
+# In[213]:
 
 
 # TODO r1 <--- r1 * scale
 # scale为0是非法输入，要求 raise ValueError
 # 直接修改参数矩阵，无返回值
 def scaleRow(M, r, scale):
-    if (scale != 0):
-        M[r] = [scale * i for i in M[r]]
+    if not scale:
+        raise ValueError('scale can not be zero')
     else:
-        raise ValueError
+        M[r] = [scale * i for i in M[r]]
     pass
 
 
-# In[202]:
+# In[214]:
 
 
 # 运行以下代码测试你的 scaleRow 函数
 get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_scaleRow')
 
 
-# In[203]:
+# In[215]:
 
 
 # TODO r1 <--- r1 + r2*scale
 # 直接修改参数矩阵，无返回值
 def addScaledRow(M, r1, r2, scale):
-    if (scale != 0):
-        if (0 <= r1) and (0 <= r2):
-            M[r1] = [a + b * scale for a,b in zip(M[r1],M[r2])]    
+    if not scale:
+        raise ValueError('scale can not be zero')
+    else:
+        # zip() 函数用于将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表
+        M[r1] = [x + (y * scale) for x, y in zip(M[r1], M[r2])]
     pass
 
 
-# In[204]:
+# In[216]:
 
 
 # 运行以下代码测试你的 addScaledRow 函数
@@ -264,7 +291,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_addScaledRo
 # 
 # 为了充分了解Gaussian Jordan消元法的计算流程，请根据Gaussian Jordan消元法，分别手动推演矩阵A为***可逆矩阵***，矩阵A为***奇异矩阵***两种情况。
 
-# #### 推演示例 
+# # 推演示例 
 # 
 # 
 # $Ab = \begin{bmatrix}
@@ -302,7 +329,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_addScaledRo
 
 # #### 以下开始你的尝试吧!
 
-# In[205]:
+# In[217]:
 
 
 # 不要修改这里！
@@ -323,25 +350,73 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 #  - $\frac{n}{m}$
 #  - $-\frac{a}{b}$
 # 
+# 对矩阵Ab按行进行编号，分别为①、②、③
 # 
 # $ Ab = \begin{bmatrix}
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \end{bmatrix}$
+#     3 & 5 & 9 & 1 \\
+#     -3 & 4 & 3 & 1 \\
+#     7 & 6 & 2 & 1 \end{bmatrix}$
 # 
+# ① <- ① * $\frac{1}{3}$
 # $ --> \begin{bmatrix}
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \end{bmatrix}$
-#     
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     -3 & 4 & 3 & 1 \\
+#     7 & 6 & 2 & 1 \end{bmatrix}$
+# 
+# ② <- ① * 3 + ②
 # $ --> \begin{bmatrix}
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \end{bmatrix}$
-#     
-# $...$
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     0 & 9 & 12 & 2 \\
+#     7 & 6 & 2 & 1 \end{bmatrix}$
+# 
+# ③ <- ① * -7 + ③
+# $ --> \begin{bmatrix}
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     0 & 9 & 12 & 2 \\
+#     0 & \frac{-17}{3} & -19 & \frac{-4}{3} \end{bmatrix}$
+# 
+# ② <- ② * $\frac{-1}{9}$
+# $ --> \begin{bmatrix}
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     0 & 1 & \frac{4}{3} & \frac{2}{9} \\
+#     0 & \frac{-17}{3} & -19 & \frac{-4}{3} \end{bmatrix}$
+# 
+# ③ <- ② * $\frac{-17}{3}$ + ③
+# $ --> \begin{bmatrix}
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     0 & 1 & \frac{4}{3} & \frac{2}{9} \\
+#     0 & 0 & \frac{-9}{103} & \frac{-2}{27} \end{bmatrix}$  
+# 
+# ③ <- ③ * $\frac{-9}{103}$ + ③
+# $ --> \begin{bmatrix}
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     0 & 1 & \frac{4}{3} & \frac{2}{9} \\
+#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$
+# 
+# ② <- ③ * $\frac{-4}{3}$ + ② 
+# $ --> \begin{bmatrix}
+#     1 & \frac{5}{3} & 3 & \frac{1}{3} \\
+#     0 & 1 & 0 & \frac{22}{103} \\
+#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$
+# 
+# ① <- ③ * -3 + ① 
+# $ --> \begin{bmatrix}
+#     1 & \frac{5}{3} & 0 & \frac{97}{309} \\
+#     0 & 1 & 0 & \frac{22}{103} \\
+#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$  
+# 
+# ① <- ② * $\frac{-5}{3}$ + ① 
+# $ --> \begin{bmatrix}
+#     1 & 0 & 0 & \frac{-13}{309} \\
+#     0 & 1 & 0 & \frac{22}{103} \\
+#     0 & 0 & 1 & \frac{2}{309} \end{bmatrix}$  
+# 
+# 方程有唯一解，为可逆矩阵：<br><br>
+# x = $\frac{-13}{309}$ <br><br>
+# y = $\frac{22}{103}$ <br><br>
+# z = $\frac{2}{309}$
 
-# In[206]:
+# In[218]:
 
 
 # 不要修改这里！
@@ -362,26 +437,77 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 #  - $-\frac{a}{b}$
 # 
 # 
-# $ Ab = \begin{bmatrix}
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \end{bmatrix}$
+# 对矩阵Ab按行进行编号，分别为①、②、③
 # 
+# $ Ab = \begin{bmatrix}
+#     -2 & -8 & -2 & 1 \\
+#     -6 & 6 & 6 & 1 \\
+#     -5 & -5 & 1 & 1 \end{bmatrix}$
+# 
+# ① <- ① * $\frac{-1}{2}$
 # $ --> \begin{bmatrix}
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \end{bmatrix}$
-#     
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     -6 & 6 & 6 & 1 \\
+#     -5 & -5 & 1 & 1 \end{bmatrix}$
+# 
+# ② <- ① * 6 + ②
 # $ --> \begin{bmatrix}
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \\
-#     0 & 0 & 0 & 0 \end{bmatrix}$
-#     
-# $...$
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 30 & 12 & -2 \\
+#     -5 & -5 & 1 & 1 \end{bmatrix}$
+# 
+# ③ <- ① * 5 + ③
+# $ --> \begin{bmatrix}
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 30 & 12 & -2 \\
+#     0 & 15 & 6 & \frac{-3}{2} \end{bmatrix}$
+# 
+# ② <- ② * $\frac{1}{30}$
+# $ --> \begin{bmatrix}
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 1 & \frac{2}{5} & \frac{-1}{15} \\
+#     0 & 15 & 6 & \frac{-3}{2} \end{bmatrix}$
+# 
+# ③ <- ② * (-15) + ③
+# $ --> \begin{bmatrix}
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 1 & \frac{2}{5} & \frac{-1}{15} \\
+#     0 & 0 & 0 & \frac{-1}{2} \end{bmatrix}$ 
+# 
+# ③ <- ③ * (-2)
+# $ --> \begin{bmatrix}
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 1 & \frac{2}{5} & \frac{-1}{15} \\
+#     0 & 0 & 0 & 1 \end{bmatrix}$
+# 
+# ② <- ③ * $\frac{1}{15}$ + ②
+# $ --> \begin{bmatrix}
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 1 & \frac{2}{5} & 0 \\
+#     0 & 0 & 0 & 1 \end{bmatrix}$
+# 
+# ① <- ③ * $\frac{1}{2}$ + ① 
+# $ --> \begin{bmatrix}
+#     1 & 4 & 1 & \frac{-1}{2} \\
+#     0 & 1 & \frac{2}{5} & 0 \\
+#     0 & 0 & 0 & 1 \end{bmatrix}$ 
+# 
+# ① <- ② * (-4) + ① 
+# $ --> \begin{bmatrix}
+#     1 & 0 & \frac{-3}{5} & 0 \\
+#     0 & 1 & \frac{2}{5} & 0 \\
+#     0 & 0 & 0 & 1 \end{bmatrix}$
+# 
+# 转为方程如下：<br><br>
+# x + $\frac{-3}{5}$ * z = 0 <br><br>
+# y + $\frac{2}{5}$ * z = 0<br><br>
+# 0 = 1<br><br>
+# 0 = 1无解，该矩阵为奇异矩阵
+# 
 
 # ### 2.3.3 实现 Gaussian Jordan 消元法
 
-# In[225]:
+# In[243]:
 
 
 # TODO 实现 Gaussain Jordan 方法求解 Ax = b
@@ -397,74 +523,58 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
     返回None，如果 A，b 高度不同
     返回None，如果 A 为奇异矩阵
 """
-
 def gj_Solve(A, b, decPts = 4, epsilon = 1.0e-16):
-    
     # 检查A，b是否行数相同 return None
-    if len(A) != len(b):
-        raise None
-        
+    if len(A) != len(b): return None
+
     # 构造增广矩阵Ab
-    Ab = augmentMatrix(A, b)
-    
+    matxAb = augmentMatrix(A, b)
+
     # 返回矩阵的行数和列数: row && column
-    row, column = shape(Ab)
-    
-    # 逐列转换Ab为化简行阶梯形矩阵，对于Ab的每一列（最后一列除外）
-    # 当前列为列c
-    for c in range (column - 1):
-        
-        r = c
-        max_list = []
-        r_index_list = []
-        
-        while(r < row):
-            max_list.append(abs(Ab[r][c]))
-            r_index_list.append(r)
-            r += 1
-        
-        # 取最大值
-        max_list_value = max(max_list)
-        # 取max_value的索引值
-        max_list_value_index = max_list.index(max_list_value)
-        # 寻找列c中 对角线以及对角线以下所有元素（行 c~N）的绝对值的最大值
-        max_row = r_index_list[max_list_value_index]
-        
-        # 如果绝对值最大值为0，那么A为奇异矩阵，返回None
-        if max_list_value < epsilon:
-            return None
-        elif max_row != c:
-            # 使用第一个行变换，将绝对值最大值所在行交换到对角线元素所在行（行c） 
-            swapRows(Ab, c, max_row)
+    matxAb_row, matxAb_column = shape(matxAb)
 
-        # 计算缩放值
-        scale = 1.0 / Ab[c][c]
-        # 使用第二个行变换，将列c的对角线元素缩放为1
-        scaleRow(Ab, c, scale)
+    # # 逐列转换Ab为化简行阶梯形矩阵，对于Ab的每一列（最后一列除外）
+    for c in range(matxAb_column - 1):
 
-        #多次使用第三个行变换，将列c的其他元素消为0
-        i = 0
-        while(i < row):
-            if i == c:
-                i += 1
+        max_idx, max_val = 0, 0
+
+        for i in range(matxAb_row):
+            if i < c:
                 continue
-            _Ab_scale = -Ab[i][c]
-            # 修改参数矩阵
-            addScaledRow(Ab, i, c, _Ab_scale)
-            i += 1
-            
-    # 打印矩阵Ab
-    printInMatrixFormat(Ab)
-    
-    # 返回Ab的最后一列
-    return_list = []
-    for r in range(row):
-        return_list.append([round(Ab[r][-1], decPts)])
-    print ("last_row_list: " + format(return_list))
-    return return_list
+            abs_current_row = abs(matxAb[i][c])
+            if abs_current_row > max_val:
+                max_idx = i
+                max_val = abs_current_row
+
+        # 如果绝对值最大值为0，那么A为奇异矩阵，返回None
+        abs_max_val = abs(max_val)
+        if abs_max_val < epsilon:
+            return None
+        else:
+            if c != max_idx:
+                swapRows(matxAb, c, max_idx)
+        # 使用第二个行变换，将列c的对角线元素缩放为1
+        divisor = matxAb[c][c]
+        if 0 != divisor:           
+            scaleRow(matxAb, c, 1.0 / divisor)
+
+        # 多次使用第三个行变换，将列c的其他元素消为0
+        for i in range(matxAb_row):
+            # 除去第c行，且除数不为0
+            if i != c:
+                # 修改参数矩阵
+                scale = -matxAb[i][c]
+                if abs(scale) <= epsilon:
+                    continue
+                addScaledRow(matxAb, i, c, scale)
+
+    ret = []
+    for row in matxAb:
+        ret.append([round(row[-1], decPts)])
+    return ret
 
 
-# In[226]:
+# In[244]:
 
 
 # 运行以下代码测试你的 gj_Solve 函数
@@ -499,7 +609,7 @@ get_ipython().magic('run -i -e test.py LinearRegressionTestCase.test_gj_Solve')
 
 # ## 3.1 随机生成样本点
 
-# In[209]:
+# In[245]:
 
 
 # 不要修改这里！
@@ -522,12 +632,12 @@ plt.show()
 # 
 # ### 3.2.1 猜测一条直线
 
-# In[210]:
+# In[255]:
 
 
 #TODO 请选择最适合的直线 y = mx + b
-m1 = 0
-b1 = 0
+m1 = 4
+b1 = 7
 
 # 不要修改这里！
 plt.xlim((-5,5))
@@ -549,17 +659,14 @@ plt.show()
 # MSE = \frac{1}{n}\sum_{i=1}^{n}{(y_i - mx_i - b)^2}
 # $$
 
-# In[211]:
+# In[266]:
 
 
 # TODO 实现以下函数并输出所选直线的MSE
 
 def calculateMSE(X,Y,m,b):
-    if len(X) == len(Y) and len(X) != 0:
-        n = len(X)
-        sum_list = [(Y[i] - m * X[i] - b) ** 2 for i in range(n)]
-        fn = float(n)
-        return sum(sum_list) / fn
+    if len(X) != 0:
+        return sum([(y - m * x -b) ** 2 for x, y in zip(X, Y)]) / len(X)
     else:
         raise ValueError
 
@@ -674,7 +781,7 @@ print(calculateMSE(X, Y, m1, b1))
 # 
 # 在3.3 中，我们知道线性回归问题等价于求解 $X^TXh = X^TY$ (如果你选择不做3.3，就勇敢的相信吧，哈哈)
 
-# In[212]:
+# In[267]:
 
 
 # TODO 实现线性回归
@@ -682,25 +789,46 @@ print(calculateMSE(X, Y, m1, b1))
 参数：X, Y 存储着一一对应的横坐标与纵坐标的两个一维数组
 返回：m，b 浮点数
 '''
-def linearRegression(X,Y):
-    X = [[x, 1] for x in X]
-    Y = [[y] for y in Y]
-    XT = transpose(X)
-    A = matxMultiply(XT, X)
-    b = matxMultiply(XT, Y)
-    result_list = gj_Solve(A, b)
-    return result_list[0][0], result_list[1][0]
+def linearRegression(X,Y): 
+    # 一维数组X转矩阵
+    matxX = [[x, 1] for x in X]
+    # 矩阵转置
+    transX = transpose(matxX)
+    # 矩阵相乘
+    matxA = matxMultiply(transX, matxX)
 
-m2, b2 = linearRegression(X, Y)
-assert isinstance(m2, float),"m is not a float"
-assert isinstance(b2, float),"b is not a float"
-print(m2, b2)
+    # 一维数组Y转矩阵
+    matxY = [[y] for y in Y]
+    # 矩阵相乘
+    matxb = matxMultiply(transX, matxY)
+
+    # 高斯消元求解
+    gj_result = gj_Solve(matxA, matxb)
+
+#     print(gj_result)
+
+    m, b = 0.0, 0.0
+
+    if not gj_result:
+        return m, b
+
+    gj_res_len = len(gj_result)
+    if gj_res_len > 0:
+        m = gj_result[0][0]
+    if gj_res_len > 1:
+        b = gj_result[1][0]
+    return m, b
+
+m2,b2 = linearRegression(X,Y)
+assert isinstance(m2,float),"m is not a float"
+assert isinstance(b2,float),"b is not a float"
+print(m2,b2)
 
 
 # 你求得的回归结果是什么？
 # 请使用运行以下代码将它画出来。
 
-# In[213]:
+# In[268]:
 
 
 # 请不要修改下面的代码
@@ -718,7 +846,7 @@ plt.show()
 
 # 你求得的回归结果对当前数据集的MSE是多少？
 
-# In[214]:
+# In[269]:
 
 
 print(calculateMSE(X,Y,m2,b2))
